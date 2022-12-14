@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <radio.h>
 
 // Define the radio frequency to use for communication
 const int FREQUENCY = 915000000;
