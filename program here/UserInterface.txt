@@ -1,0 +1,10 @@
+Graph:
+Alt vs Temp/Pressure/Smoke Concentration/Radiation
+
+Analytics:
+
+This planet is/is not/is partially suitable for humans
+
+The Average Temperature for this planet is ??? C. This is ??? higher/lower than the Average Temperature on Earth
+The Acceleration due to Gravity is ???. This
+Gravitational Constant
