@@ -66,7 +66,8 @@ while True:
     #0     1      2     3         4         5   6
     #time, accel, temp, humidity, pressure, uv, ppm
     data = serialport.readline().decode("ascii")
-
+    if data == "Rover Mode":
+        break
     # data = input()
     print(data)
     try:
