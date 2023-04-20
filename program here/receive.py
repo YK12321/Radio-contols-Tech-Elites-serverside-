@@ -2,7 +2,7 @@ import serial
 import matplotlib.pyplot as plt
 import math
 # Open serial port
-serialport = serial.Serial('COM5', baudrate = 9600, timeout = 2) # Replace 'COM1' with the name of your serial port and 9600 with the baud rate
+serialport = serial.Serial('COM5', baudrate = 9600, timeout = 2)
 
 # Set up plots
 plt.style.use('ggplot')
@@ -52,6 +52,7 @@ for ax in axs.flatten():
 # Read and plot data from serial port in real-time
 # xdata = [[] for i in range(6)]
 # ydata = [[] for i in range(6)]
+time = []
 height = []
 acceleration = []
 humidity = []
@@ -62,15 +63,45 @@ radiation =[]
 
 plt.show(block = False)
 while True:
-    #0     1,  2,  3,  4,      5,           6,        7,        8,  9,     10,     11,
-    #time, ax, ay, az, a(abs), temperature, humidity, pressure, uv, ambient_light, Air_quality
+    #0     1      2     3         4         5   6
+    #time, accel, temp, humidity, pressure, uv, ppm
     data = serialport.readline().decode("ascii")
 
     # data = input()
     print(data)
     try:
-        values = str(data).split()
-        print(values)
+        values = str(data).split(',')
+        time.append(int(values[0]))
+        height.append(press_to_height(values[4], values[2]))
+        acceleration.append(values[1])
+        humidity.append(values[3])
+        pressure.append(values[4])
+        temperature.append(values[2])
+        pollution.append(values[6])
+        radiation.append(values[5])
+        lines[0].set_data(height, acceleration)
+        axs[0, 0].relim()
+        axs[0, 0].autoscale_view()
+
+        lines[1].set_data(height, humidity)
+        axs[0, 1].relim()
+        axs[0, 1].autoscale_view()
+
+        lines[2].set_data(height, pressure)
+        axs[1, 0].relim()
+        axs[1, 0].autoscale_view()
+
+        lines[3].set_data(height, temperature)
+        axs[1, 1].relim()
+        axs[1, 1].autoscale_view()
+
+        lines[4].set_data(height, pollution)
+        axs[2, 0].relim()
+        axs[2, 0].autoscale_view()
+
+        lines[5].set_data(height, radiation)
+        axs[2, 1].relim()
+        axs[2, 1].autoscale_view()
         # for i in range(6):
         #     xdata[i].append(int(values[i]))
         #     ydata[i].append(int(values[i]))
