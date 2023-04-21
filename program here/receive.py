@@ -2,7 +2,7 @@ import serial
 import matplotlib.pyplot as plt
 import math
 # Open serial port
-serialport = serial.Serial('COM5', baudrate = 9600, timeout = 2)
+serialport = serial.Serial('COM7', baudrate = 9600, timeout = 2)
 
 # Set up plots
 plt.style.use('ggplot')
@@ -26,22 +26,22 @@ def total_acceleration(x, y, z):
 # Air Pollution vs Height
 # UV Radiation vs Height
 
-axs[0, 0].set_xlabel('Height')
+axs[0, 0].set_xlabel('Time')
 axs[0, 0].set_ylabel('Acceleration')
 
-axs[0, 1].set_xlabel('Height')
+axs[0, 1].set_xlabel('Time')
 axs[0, 1].set_ylabel('Humidity')
 
-axs[1, 0].set_ylabel('Height')
+axs[1, 0].set_ylabel('Time')
 axs[1, 0].set_ylabel('Pressure')
 
-axs[1, 1].set_ylabel('Height')
+axs[1, 1].set_ylabel('Time')
 axs[1, 1].set_ylabel('Temperature')
 
-axs[2, 0].set_ylabel('Height')
+axs[2, 0].set_ylabel('Time')
 axs[2, 0].set_ylabel('Air Pollution')
 
-axs[2, 1].set_ylabel('Height')
+axs[2, 1].set_ylabel('Time')
 axs[2, 1].set_ylabel('UV Radiation')
 
 lines = []
@@ -69,38 +69,44 @@ while True:
     if data == "Rover Mode":
         break
     # data = input()
-    print(data)
+    # print(data)
     try:
+
         values = str(data).split(',')
-        time.append(int(values[0]))
-        height.append(press_to_height(values[4], values[2]))
-        acceleration.append(values[1])
-        humidity.append(values[3])
-        pressure.append(values[4])
-        temperature.append(values[2])
-        pollution.append(values[6])
-        radiation.append(values[5])
-        lines[0].set_data(height, acceleration)
+        if len(values) < 7:
+            continue
+        if len(time) > 0 and float(values[0]) <= float(time[-1]):
+            continue
+        time.append(float(values[0]))
+        height.append(press_to_height(float(values[4]), float(values[2])))
+        print("Height:", press_to_height(float(values[4]), float(values[2])))
+        acceleration.append(float(values[1]))
+        humidity.append(float(values[3]))
+        pressure.append(float(values[4]))
+        temperature.append(float(values[2]))
+        pollution.append(float(values[6]))
+        radiation.append(float(values[5]))
+        lines[0].set_data(time, acceleration)
         axs[0, 0].relim()
         axs[0, 0].autoscale_view()
 
-        lines[1].set_data(height, humidity)
+        lines[1].set_data(time, humidity)
         axs[0, 1].relim()
         axs[0, 1].autoscale_view()
 
-        lines[2].set_data(height, pressure)
+        lines[2].set_data(time, pressure)
         axs[1, 0].relim()
         axs[1, 0].autoscale_view()
 
-        lines[3].set_data(height, temperature)
+        lines[3].set_data(time, temperature)
         axs[1, 1].relim()
         axs[1, 1].autoscale_view()
 
-        lines[4].set_data(height, pollution)
+        lines[4].set_data(time, pollution)
         axs[2, 0].relim()
         axs[2, 0].autoscale_view()
 
-        lines[5].set_data(height, radiation)
+        lines[5].set_data(time, radiation)
         axs[2, 1].relim()
         axs[2, 1].autoscale_view()
         # for i in range(6):
@@ -110,7 +116,7 @@ while True:
         #     axs[i//2, i%2].relim()
         #     axs[i//2, i%2].autoscale_view()
         plt.draw()
-        plt.pause(0.5)
+        plt.pause(1)
     except ValueError:
         break
 
