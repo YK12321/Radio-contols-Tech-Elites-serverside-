@@ -38,6 +38,10 @@ void loop() {
     input += c;
   }
   
+  if(input.equalsIgnoreCase("Rover mode")){
+    loop2();
+  }
+
   if (input.length() > 0) {
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
     input.getBytes(buf, input.length() + 1);
@@ -46,8 +50,13 @@ void loop() {
     Serial1.println("Sent message #" + String(messageCount) + ": " + input);
     messageCount++;
   }
+
     digitalWrite(LED_BUILTIN, HIGH);
   delay(500);
     digitalWrite(LED_BUILTIN, LOW);
     delay(500);
+}
+
+void loop2(){
+  
 }
