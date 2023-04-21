@@ -1,3 +1,4 @@
+import receive
 import serial
 from PIL import Image, ImageTk
 import tkinter as tk
@@ -17,12 +18,22 @@ ser = serial.Serial('COM23', 1000000)
 # Flag to indicate if livestream is running
 livestream_running = False
 
+
 # Function to update the image
 def update_image():
     # Send a "c" character to trigger the camera to take and send an image
-
+    data = ""
     # Read the image data from the serial port
-    data = ser.read(320 * 240)
+    recieved = 0
+    while received < 320*240:
+        inp = ser.readline()
+        inp.rstrip(b'\r\n')
+        if len(inp) > 0:
+            ser.write(b'received')
+            data += inp
+            received += 1
+        else:
+            ser.write(b'resend')
 
     # Create a PIL Image object from the raw image data
     new_img = Image.frombytes('L', (320, 240), data)
@@ -35,6 +46,7 @@ def update_image():
     # If livestream is running, schedule another update
     if livestream_running:
         root.after(1, update_image)
+
 
 # Function to handle button click
 def on_click():
@@ -50,6 +62,7 @@ def on_click():
     else:
         # Stop livestream
         livestream_button.config(text="Start Livestream")
+
 
 # Create a button to start/stop the livestream
 livestream_button = tk.Button(root, text="Start Livestream", command=on_click)

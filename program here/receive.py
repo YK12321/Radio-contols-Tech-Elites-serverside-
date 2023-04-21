@@ -1,6 +1,7 @@
 import serial
 import matplotlib.pyplot as plt
 import math
+import numpy as np
 # Open serial port
 serialport = serial.Serial('COM7', baudrate = 9600, timeout = 2)
 
@@ -52,6 +53,7 @@ for ax in axs.flatten():
 # Read and plot data from serial port in real-time
 # xdata = [[] for i in range(6)]
 # ydata = [[] for i in range(6)]
+
 time = []
 height = []
 acceleration = []
@@ -61,8 +63,16 @@ temperature = []
 pollution = []
 radiation =[]
 
+aabs = 0.0
+temp = 0.0
+humid = 0.0
+pres = 0.0
+uv = 0.0
+airQuality = 0.0
+counter = 0.0
+
 plt.show(block = False)
-while True:
+for i in range(10):
     #0     1      2     3         4         5   6
     #time, accel, temp, humidity, pressure, uv, ppm
     data = serialport.readline().decode("ascii")
@@ -77,9 +87,19 @@ while True:
             continue
         if len(time) > 0 and float(values[0]) <= float(time[-1]):
             continue
+        counter += 1
         time.append(float(values[0]))
         height.append(press_to_height(float(values[4]), float(values[2])))
         print("Height:", press_to_height(float(values[4]), float(values[2])))
+
+        aabs += float(values[1])
+        temp += float(values[2])
+        humid += float(values[3])
+        pres += float(values[4])
+        uv += float(values[5])
+        airQuality += float(values[6])
+
+
         acceleration.append(float(values[1]))
         humidity.append(float(values[3]))
         pressure.append(float(values[4]))
@@ -120,4 +140,48 @@ while True:
     except ValueError:
         break
 
+aabs = aabs/counter
+temp = temp/counter
+humid = humid/counter
+uv = uv/counter
+pres = pres/counter
+airQuality = airQuality/counter
 
+if (aabs > 19.62):
+    print("The Gravitational Pull is " + str(aabs) + " too strong for Human Growth")
+elif (aabs < 5.00):
+    print("The Gravitational Pull is " + str(aabs) + " too weak for Human Growth")
+else:
+    print("The Gravivational Pull is " + str(aabs) + " and is suitable for Human Growth")
+
+if (temp > 50):
+    print("The Temperature is " + str(temp) + " too high for Human Growth")
+elif (temp < -20):
+    print("The Temperature is " + str(temp) + " too low for Human Growth")
+else:
+    print("The Temperature is " + str(temp) + " and is suitable for Human Growth")
+
+if (humid > 65):
+    print("The Humidity is " + str(humid) + " too high for Human Growth")
+elif (humid < 20):
+    print("The Humidity is " + str(humid) + " too low for Human Growth")
+else:
+    print("The Humidity is " + str(humid) + " and is suitable for Human Growth")
+
+if (uv > 11):
+    print("The UV Radiation is " + str(uv) + " too high for Human Growth")
+else:
+    print("The UV Radiation is " + str(uv) + " suitable for Human Growth")
+
+if (pres > 202.650):
+    print("The Pressure is " + str(pres) + " too high for Human Growth")
+elif (pres < 6.3):
+    print("The Pressure is " + str(pres) + " too low for Human Growth")
+else:
+    print("The Pressure is " + str(pres) + " and is suitable for Human Growth")
+
+if (airQuality > 800):
+    print("The Air Quality is " + str(airQuality) + " too high for Human Growth")
+else:
+    print("The Air Quality is " + str(airQuality) + " and is suitable for Human Growth")
+serialport.close()
