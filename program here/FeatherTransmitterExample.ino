@@ -58,5 +58,7 @@ void loop() {
 }
 
 void loop2(){
+  //This loop implements anti-lost packet measures
+  if(radio.recieve())
   
 }
