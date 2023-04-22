@@ -25,18 +25,18 @@ def update_image():
     data = ""
     # Read the image data from the serial port
     recieved = 0
-    while received < 320*240:
+    while received < 1600*1200:
         inp = ser.readline()
         inp.rstrip(b'\r\n')
         if len(inp) > 0:
-            ser.write(b'received')
+            ser.write('received\n')
             data += inp
             received += 1
         else:
-            ser.write(b'resend')
+            ser.write('resend\n')
 
     # Create a PIL Image object from the raw image data
-    new_img = Image.frombytes('L', (320, 240), data)
+    new_img = Image.frombytes('L', (1600, 1200), data)
 
     # Update the displayed image
     img_tk = ImageTk.PhotoImage(new_img)

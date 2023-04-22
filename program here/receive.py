@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 # Open serial port
-serialport = serial.Serial('COM7', baudrate = 9600, timeout = 2)
+serialport = serial.Serial('COM5', baudrate = 9600, timeout = 2)
 
 # Set up plots
 plt.style.use('ggplot')
@@ -72,11 +72,13 @@ airQuality = 0.0
 counter = 0.0
 
 plt.show(block = False)
-for i in range(10):
+while True:
     #0     1      2     3         4         5   6
     #time, accel, temp, humidity, pressure, uv, ppm
     data = serialport.readline().decode("ascii")
+    print(data)
     if data == "Rover Mode":
+        print("ROVER MODE")
         break
     # data = input()
     # print(data)
