@@ -190,12 +190,13 @@ else:
     print("The Air Quality is " + str(airQuality) + " and is suitable for Human Growth")
 tp = []
 hy = []
-ambientlight = []
+# ambientlight = []
 index = []
-for i in range(5):
+for i in range(6):
     data = serialport.readline().decode("ascii")
     values = data.split(',')
     tp.append(int(values[0]))
     hy.append(int(values[1]))
-    ambientlight.append(int(values[2]))
-    index.append(int(values[3]))
+    # ambientlight.append(int(values[2]))
+    index.append(int(values[2]))
+print(data, tp, hy)
