@@ -143,9 +143,9 @@ void loop() {
   delay(1000);
   }
 }
-int readSensors(int i){
-  temperature[i] = HS300x.readTemperature();
-  humidity[i] = HS300x.readTemperature();
+int readSensors(int i) {
+  temperature[i] = roundf(HS300x.readTemperature() * 1000) / 1000.0f;
+  humidity[i] = roundf(HS300x.readHumidity() * 1000) / 1000.0f;
   i++;
 }
 void LFRS(){

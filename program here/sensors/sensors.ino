@@ -1,6 +1,10 @@
 /*
 Including libraries
 */
+//Ble{
+#include <ArduinoBLE.h>
+#include <HardwareBLESerial.h>
+//Ble}
 //Accelerometer & angular velocity{
 #include "Arduino_BMI270_BMM150.h"
 //Accelerometer & angular velocity}
@@ -19,6 +23,12 @@ Including libraries
 /*
 Creating variables for sensors
 */
+
+/*
+Setting up ble instance
+*/
+  HardwareBLESerial &bleSerial = HardwareBLESerial::getInstance();
+
 int timeCustom = 0;
 //Uv variables{
 Adafruit_LTR390 ltr = Adafruit_LTR390();
@@ -41,11 +51,13 @@ MQ135 mq135_sensor(PIN_MQ135);
 //gas variables}
 
 void setup() {
-
+Serial.begin(9600);
 /*
 Setting up sensors
 */
-Serial1.begin(9600);
+   if (!bleSerial.beginAndSetupBLE("Echo")) {
+     Serial.println("BLUETOOTH FAILED");
+  }
 //Uv{
 if ( ! ltr.begin() ) {
     Serial1.println("Couldn't find LTR sensor!");
@@ -200,5 +212,30 @@ void loop() {
   Serial1.print(correctedPPM);  
   delay(1000);
   timeCustom++;
+  if(Serial.available()>0){
+    String input = Serial.readString();
+    if(input.equalsIgnoreCase("Rover mode")){
+      rover();
+    }
+  }
 
+}
+void rover() {
+  char line[20];
+  while (1) {
+    bleSerial.poll();
+    if (bleSerial.availableLines() > 0) {
+      // read the line of text from the BLESerial port
+      bleSerial.readLine(line, sizeof(line));
+      bleSerial.poll();
+      // print the line of text to the serial1 port
+      int a = 0;
+      String lString;
+      while (line[a] != '\0') {
+        lString += line[a];
+        a++;
+      }
+      Serial1.println(lString);
+    }
+  }
 }
