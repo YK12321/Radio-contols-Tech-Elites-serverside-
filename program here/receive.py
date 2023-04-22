@@ -188,15 +188,16 @@ if (airQuality > 800):
     print("The Air Quality is " + str(airQuality) + " too high for Human Growth")
 else:
     print("The Air Quality is " + str(airQuality) + " and is suitable for Human Growth")
-tp = []
-hy = []
-# ambientlight = []
-index = []
-for i in range(6):
-    data = serialport.readline().decode("ascii")
-    values = data.split(',')
-    tp.append(int(values[0]))
-    hy.append(int(values[1]))
-    # ambientlight.append(int(values[2]))
-    index.append(int(values[2]))
-print(data, tp, hy)
+arr1 = np.array(height)
+arr2 = np.array(acceleration)
+arr3 = np.array(humidity)
+arr5 = np.array(temperature)
+arr6 = np.array(pollution)
+arr7 = np.array(radiation)
+np.savetxt("height.txt", arr1, fmt='%.2f')
+np.savetxt("acceleration.txt", arr2, fmt='%.2f')
+np.savetxt("humidity.txt", arr3, fmt='%.2f')
+np.savetxt("temperature.txt", arr5, fmt='%.2f')
+np.savetxt("pollution.txt", arr6, fmt='%.2f')
+np.savetxt("radiation.txt", arr7, fmt='%.2f')
+
