@@ -13,6 +13,7 @@
 #define BUTTON 11
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
+bool buttonPressed = false;
 
 void setup() {
   Serial.begin(9600);
@@ -38,9 +39,15 @@ void setup() {
 }
 
 void loop() {
-  if(digitalRead(BUTTON)){
+  if(digitalRead(BUTTON) && !buttonPressed){
     Serial.println("Rover mode");
+    rf95.send((uint8_t*)"Rover mode", 10);
+    rf95.waitPacketSent();
+    buttonPressed = true;
     delay(1000);
+  }
+  if(!digitalRead(BUTTON)){
+    buttonPressed = false;
   }
   if (rf95.available()) {
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
@@ -53,4 +60,3 @@ void loop() {
     }
   }
 }
-
