@@ -1,10 +1,6 @@
 //BLE lib{
 #include <ArduinoBLE.h>
-#include <BLEPeripheral.h>
-#include <BLESerial.h>
-
-BLEPeripheral blePeripheral = BLEPeripheral();
-BLESerial bleSerial = BLESerial();
+#include <HardwareBLESerial.h>
 //BLE lib}
 //Temperature and humidity{
 #include <Arduino_HS300x.h>
@@ -12,24 +8,32 @@ BLESerial bleSerial = BLESerial();
 //Temperature and humidity variables{
 float temperature[6];
 float humidity[6];
+char iChar;
 //Temperature and humidity variables}
 bool freeYet = false;
 bool done = false;
+  HardwareBLESerial &bleSerial = HardwareBLESerial::getInstance();
 void setup() {
   // put your setup code here, to run once:
-  blePeripheral.setLocalName("Transmitter");
+/*  blePeripheral.setLocalName("Transmitter");
   blePeripheral.setDeviceName("Transmitter");
   blePeripheral.setAppearance(0x0080);
   blePeripheral.begin();
   bleSerial.setLocalName("Transmitter Serial");
   bleSerial.begin();
-  blePeripheral.addAttribute(bleSerial);
+  blePeripheral.addAttribute(bleSerial);*/
   Serial1.begin(9600);
   pinMode(D2, OUTPUT);
   pinMode(D3, OUTPUT);
   pinMode(D4, OUTPUT);
   pinMode(D5, OUTPUT);
-
+   if (!bleSerial.beginAndSetupBLE("Echo")) {
+    Serial.begin(9600);
+    while (true) {
+      Serial.println("failed to initialize HardwareBLESerial!");
+      delay(1000);
+    }
+  }
   if (!HS300x.begin()) {
   Serial1.println("Failed to initialize humidity temperature sensor!");
   int i = 0;
@@ -61,52 +65,72 @@ void loop() {
   stop();
   
   i = readSensors(i);
+  bleSerial.poll();
+  if(bleSerial.availableLines()>0){
   bleSerial.print(temperature[i]);
   bleSerial.print(",");
   bleSerial.print(humidity[i]);
   bleSerial.print(",");
-  bleSerial.print(i);
+  iChar = String(i)[0];
+  bleSerial.print(iChar);
+  }
   moveForward(3000);
   i = readSensors(i);
+  bleSerial.poll();
+  if(bleSerial.availableLines()>0){
   bleSerial.println(temperature[i]);
   bleSerial.print(",");
   bleSerial.print(humidity[i]);
   bleSerial.print(",");
-  bleSerial.print(i);
+  iChar = String(i)[0];
+  bleSerial.print(iChar);
+  }
   turnRight();
   moveForward(3000);
+  bleSerial.poll();
+  if(bleSerial.availableLines()>0){
   i = readSensors(i);
   bleSerial.println(temperature[i]);
   bleSerial.print(",");
   bleSerial.print(humidity[i]);
   bleSerial.print(",");
-  bleSerial.print(i);
+  iChar = String(i)[0];
+  bleSerial.print(iChar);}
   turnLeft();
   moveForward(3000);
+  bleSerial.poll();
+  if(bleSerial.availableLines()>0){
   i = readSensors(i);  
   bleSerial.println(temperature[i]);
   bleSerial.print(",");
   bleSerial.print(humidity[i]);
   bleSerial.print(",");
-  bleSerial.print(i);
+  iChar = String(i)[0];
+  bleSerial.print(iChar);}
   turnLeft();
   moveForward(3000);
+   bleSerial.poll();
+  if(bleSerial.availableLines()>0){
   i = readSensors(i);
   bleSerial.println(temperature[i]);
   bleSerial.print(",");
   bleSerial.print(humidity[i]);
   bleSerial.print(",");
-  bleSerial.print(i);
+  iChar = String(i)[0];
+  bleSerial.print(iChar);}
   turnLeft();
   moveForward(3000);
+   bleSerial.poll();
+  if(bleSerial.availableLines()>0){
   i = readSensors(i);
   bleSerial.println(temperature[i]);
   bleSerial.print(",");
   bleSerial.print(humidity[i]);
   bleSerial.print(",");
-  bleSerial.print(i);
+  iChar = String(i)[0];
+  bleSerial.print(iChar);}
   turnLeft();
-  Serial1.print("C");
+  // Serial1.print("C"); Deprecated due to the camera being broken
   //delay(8*60*1000); Removed in camera hotfix, as no longer needed
   turnRight();
   turnRight();
@@ -116,8 +140,6 @@ void loop() {
   // Read data from sensors or other sources
 
   // Send data to receiver
-  bleSerial.print();
-
   delay(1000);
   }
 }
