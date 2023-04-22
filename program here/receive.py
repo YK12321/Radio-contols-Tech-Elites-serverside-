@@ -72,12 +72,13 @@ airQuality = 0.0
 counter = 0.0
 
 plt.show(block = False)
+
 while True:
     #0     1      2     3         4         5   6
-    #time, accel, temp, humidity, pressure, uv, ppm
+    #time, accel, temp, humidityT, pressure, uv, ppm
     data = serialport.readline().decode("ascii")
     print(data)
-    if data == "Rover Mode":
+    if data.find("Rover mode") != -1:
         print("ROVER MODE")
         break
     # data = input()
@@ -139,6 +140,7 @@ while True:
         #     axs[i//2, i%2].autoscale_view()
         plt.draw()
         plt.pause(1)
+
     except ValueError:
         break
 
@@ -186,4 +188,14 @@ if (airQuality > 800):
     print("The Air Quality is " + str(airQuality) + " too high for Human Growth")
 else:
     print("The Air Quality is " + str(airQuality) + " and is suitable for Human Growth")
-serialport.close()
+tp = []
+hy = []
+ambientlight = []
+index = []
+for i in range(5):
+    data = serialport.readline().decode("ascii")
+    values = data.split(',')
+    tp.append(int(values[0]))
+    hy.append(int(values[1]))
+    ambientlight.append(int(values[2]))
+    index.append(int(values[3]))

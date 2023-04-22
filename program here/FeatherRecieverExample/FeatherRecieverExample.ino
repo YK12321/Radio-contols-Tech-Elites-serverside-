@@ -9,7 +9,7 @@
 #define RFM95_CS 8
 #define RFM95_RST 4
 #define RFM95_INT 7
-#define RFM95_FREQ 915.0
+#define RFM95_FREQ 912.0
 #define BUTTON 11
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
@@ -39,9 +39,8 @@ void setup() {
 
 void loop() {
   if(digitalRead(BUTTON)){
-    
     Serial.println("Rover mode");
-    Serial.println("Enabling rover mode. Non-Camera hotfix 2023-04-22 (2:19).")
+    delay(1000);
   }
   if (rf95.available()) {
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
